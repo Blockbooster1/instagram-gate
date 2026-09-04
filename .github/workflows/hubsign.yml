@@ -11,72 +11,95 @@ jobs:
   hubsign:
     runs-on: ubuntu-latest
     steps:
-      - name: Plist aus Blob bauen und signieren lassen
+      - name: Zwei Varianten bauen und signieren lassen
         env:
           BLOB: |
-            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
-            8CR9j5ujlwyfvPs/6CkoI/tYAAA=
+            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
+            KIlhE6LlJ2on6XvcHD16e/L2//cwPyGLVwAA
         run: |
           mkdir -p b
-          python3 -c "import base64,gzip,os;open('b/Instagram-Gate.plist','wb').write(gzip.decompress(base64.b64decode(os.environ['BLOB'])))"
           python3 - <<'EOF'
-          import json, urllib.request
-          xml = open('b/Instagram-Gate.plist','rb').read().decode('utf-8')
-          payload = json.dumps({"shortcutName": "Instagram-Gate", "shortcut": xml}).encode()
-          req = urllib.request.Request("https://hubsign.routinehub.services/sign", data=payload,
-                                       headers={"Content-Type": "application/json",
-                                                "User-Agent": "cherri/2.0.0"})
-          with urllib.request.urlopen(req, timeout=90) as r:
-              data = r.read()
-              print("status", r.status, "bytes", len(data))
-          open('b/Instagram-Gate.shortcut', 'wb').write(data)
-          print("magic:", data[:4])
-          assert data[:4] == b"AEA1", "Antwort ist keine signierte Datei"
+          import base64, gzip, os, plistlib, json, urllib.request, copy
+
+          raw = gzip.decompress(base64.b64decode(os.environ['BLOB']))
+          A = plistlib.loads(raw)
+
+          B = copy.deepcopy(A)
+          n = 0
+          for act in B['WFWorkflowActions']:
+              p = act['WFWorkflowActionParameters']
+              if act['WFWorkflowActionIdentifier'] == 'is.workflow.actions.conditional' \
+                 and 'WFNumberValue' in p:
+                  name = p['WFNumberValue']['Value']['VariableName']
+                  p['WFNumberValue'] = {
+                      'Value': {'string': '\ufffc',
+                                'attachmentsByRange': {
+                                    '{0, 1}': {'Type': 'Variable', 'VariableName': name}}},
+                      'WFSerializationType': 'WFTextTokenString'}
+                  n += 1
+          print('Variante B: %d Bedingungen umgeschrieben' % n)
+          assert n == 2
+
+          def sign(pl, name, out):
+              xml = plistlib.dumps(pl, fmt=plistlib.FMT_XML).decode('utf-8')
+              body = json.dumps({'shortcutName': name, 'shortcut': xml}).encode()
+              req = urllib.request.Request(
+                  'https://hubsign.routinehub.services/sign', data=body,
+                  headers={'Content-Type': 'application/json',
+                           'User-Agent': 'cherri/2.0.0'})
+              with urllib.request.urlopen(req, timeout=90) as r:
+                  data = r.read()
+              print(name, 'status', r.status, 'bytes', len(data), 'magic', data[:4])
+              assert data[:4] == b'AEA1', name + ': keine signierte Datei'
+              open(out, 'wb').write(data)
+
+          sign(A, 'Instagram-Gate-A', 'b/Instagram-Gate-A.shortcut')
+          sign(B, 'Instagram-Gate-B', 'b/Instagram-Gate-B.shortcut')
           EOF
           ls -l b/
 
@@ -91,6 +114,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh release create -R Blockbooster1/instagram-gate "sign-${{ github.run_number }}" b/Instagram-Gate.shortcut \
-            --title "Instagram-Gate signiert" \
-            --notes "Signiert via HubSign (RoutineHub)."
+          gh release create -R Blockbooster1/instagram-gate "sign-${{ github.run_number }}" \
+            b/Instagram-Gate-A.shortcut b/Instagram-Gate-B.shortcut \
+            --title "Instagram-Gate Varianten A und B" \
+            --notes "A: WFNumberValue als Attachment. B: WFNumberValue als TextTokenString."
