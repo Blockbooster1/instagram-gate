@@ -38,10 +38,10 @@ jobs:
             X3Fats5D0Gyllqtsd7/p7k3knaHNATEqEKMu+0tLgjvZn7ujCeb6efpENmS7UB+w6y8QVeyfrdq/
             s3jR0S0Z8IKiAtmgo68pQhkYsiHJtsoWNJRK637odK7OMenHfoXUU7tTyXT96eyRuetOMyEzh5/c
             qFcLlb8qwt854X8ltFugW4Wp9aBah6r3bgdXYOoywhb0lYDDTp9k4+MnVH5IfxaPTqCIvKACHgKJ
-            b+a00ew9+zuiyr3784/f/0Ih6p80YEM/ezf69kfVJDFxw/8kP6poC+DVHvfg+YCrx6pqGlp0Mkn
-            Jtzqz1BEUTZVX2Jq1AWQL6hStDBWIsqZLomEgR4XVM5Jg1LSbDv/NVFxeushG6lTvaM+YRylUcso
-            siketdTzLKwyNWdZycZcbwcADdms3xqqXP0l4ZUv7okl/a9Qxhs7bNPwlGxjQsNmGuqFqdEbHC/C
-            5InCWJFxFJqwXgpun934t8N+3WO8EaUY4RvUMm1O7wm9dk2QFKggYtiYA2ZQtoOtQAIIuS7qKBFXW
+            b+a00ew9+zuiyr3784/f/0Ih6p80YEM/ezf69kfVJDFxw/8kP6poC+DVHvfg+YCrx6pqGlp0MknJ
+            tzqPFBHUTZVX2Jq1AWQL6hStDBWIsqZLomEgR4XVM5Jg1LSbDv/NVFxeushG6lTvaM+YRylUcsos
+            ikfp9TwLqwyNWdZycZcbwcADdms3xqqXP0l4ZUv7okl/a9Qxhs7bNPwlGxjQsNmGuqFqdEbHC/C5
+            InCWJFxFJqwXgpun934t8N+3WO8EaUY4RvUMm1O7wm9dk2QFKggYtiYA2ZQtoOtQAIIuS7qKBFXW
             lAfh93iI3WMEf/zOw+bocADwvV0UfAq43TwbX9ExgIv47vtYE5SQY+oqTx2sjxZ/kQ40VtwhS6b/
             kUxF0eFhTfAZ1wSXY/GwGli3GlhxjOc1jUlb35CFjkmTX0XAFhkyQFUCpm0KFBmgIAiWgCTL2r/t
             bNf/Oc/I1o2n2Qq0HZUHig0tIPOqCExBVYBjIR4Kti7rJl9pPGOk32WCU7eMq5MB1Pf3bB9880ja
@@ -69,6 +69,7 @@ jobs:
           raw = gzip.decompress(base64.b64decode(os.environ['BLOB']))
           A = plistlib.loads(raw)
 
+          # Variante B: WFNumberValue als WFTextTokenString statt Attachment
           B = copy.deepcopy(A)
           n = 0
           for act in B['WFWorkflowActions']:
