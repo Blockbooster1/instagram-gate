@@ -1,0 +1,69 @@
+name: Signieren diagnostizieren
+
+on:
+  push:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  diag:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Kandidaten bauen
+        run: |
+          mkdir -p b
+          grep -E '^ +[A-Za-z0-9+/=]{40,}$' .github/workflows/sign.yml | tr -d ' ' > b/blob.b64
+          python3 -c "import base64,gzip;open('b/full.plist','wb').write(gzip.decompress(base64.b64decode(open('b/blob.b64').read())))"
+          plutil -lint b/full.plist
+          python3 -c "import plistlib;plistlib.dump({'WFWorkflowClientVersion':'2607.0.6','WFWorkflowMinimumClientVersion':900,'WFWorkflowMinimumClientVersionString':'900','WFWorkflowIcon':{'WFWorkflowIconGlyphNumber':59511,'WFWorkflowIconStartColor':4282601983},'WFWorkflowImportQuestions':[],'WFWorkflowInputContentItemClasses':['WFStringContentItem'],'WFWorkflowTypes':[],'WFQuickActionSurfaces':[],'WFWorkflowActions':[{'WFWorkflowActionIdentifier':'is.workflow.actions.gettext','WFWorkflowActionParameters':{'WFTextActionText':'hallo'}}]},open('b/min.plist','wb'))"
+          plutil -lint b/min.plist
+          for n in full min; do
+            cp b/$n.plist b/$n-xml.shortcut
+            cp b/$n.plist b/$n-bin.plist
+            plutil -convert binary1 b/$n-bin.plist
+            cp b/$n-bin.plist b/$n-bin.shortcut
+          done
+          ls -l b/
+
+      - name: Alle Varianten signieren
+        run: |
+          echo "### shortcuts help sign" >> b/diag.log
+          shortcuts help sign >> b/diag.log 2>&1 || true
+          echo "### Versuche" >> b/diag.log
+          for f in b/full.plist b/full-xml.shortcut b/full-bin.shortcut b/min.plist b/min-xml.shortcut b/min-bin.shortcut; do
+            echo "=== $f ===" >> b/diag.log
+            if shortcuts sign --mode anyone --input "$f" --output "$f.signed" >> b/diag.log 2>&1; then
+              echo "OK  magic=$(head -c 4 "$f.signed") groesse=$(wc -c < "$f.signed")" >> b/diag.log
+            else
+              echo "FEHLGESCHLAGEN" >> b/diag.log
+            fi
+          done
+          echo "----- diag.log -----"
+          cat b/diag.log
+
+      - name: Diagnose hochladen
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: diagnose
+          path: b/
+
+      - name: Release, falls eine volle Variante signiert wurde
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          for f in b/full.plist.signed b/full-xml.shortcut.signed b/full-bin.shortcut.signed; do
+            if [ -f "$f" ] && [ "$(head -c 4 "$f")" = "AEA1" ]; then
+              cp "$f" b/Instagram-Gate.shortcut
+              gh release create "v${{ github.run_number }}" b/Instagram-Gate.shortcut \
+                --title "Instagram-Gate v${{ github.run_number }}" \
+                --notes "Signierter Kurzbefehl, Quelle: $f"
+              echo "Release aus $f erstellt"
+              exit 0
+            fi
+          done
+          echo "Keine Variante ergab eine signierte Datei."
