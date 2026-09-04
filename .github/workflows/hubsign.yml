@@ -1,0 +1,50 @@
+name: Signieren via HubSign
+
+on:
+  push:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  hubsign:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Plist bauen und signieren lassen
+        run: |
+          mkdir -p b
+          grep -E '^ +[A-Za-z0-9+/=]{40,}$' .github/workflows/sign.yml | tr -d ' ' > b/blob.b64
+          python3 -c "import base64,gzip;open('b/Instagram-Gate.plist','wb').write(gzip.decompress(base64.b64decode(open('b/blob.b64').read())))"
+          python3 - <<'EOF'
+          import json, urllib.request
+          xml = open('b/Instagram-Gate.plist','rb').read().decode('utf-8')
+          payload = json.dumps({"shortcutName": "Instagram-Gate", "shortcut": xml}).encode()
+          req = urllib.request.Request("https://hubsign.routinehub.services/sign", data=payload,
+                                       headers={"Content-Type": "application/json",
+                                                "User-Agent": "cherri/2.0.0"})
+          with urllib.request.urlopen(req, timeout=90) as r:
+              data = r.read()
+              print("status", r.status, "ctype", r.headers.get("Content-Type"), "bytes", len(data))
+          open('b/Instagram-Gate.shortcut', 'wb').write(data)
+          print("magic:", data[:4])
+          assert data[:4] == b"AEA1", "Antwort ist keine signierte Datei"
+          EOF
+          ls -l b/
+
+      - name: Ergebnis hochladen
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: signiert
+          path: b/
+
+      - name: Release anlegen
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "sign-${{ github.run_number }}" b/Instagram-Gate.shortcut \
+            --title "Instagram-Gate signiert" \
+            --notes "Signiert via HubSign (RoutineHub). Auf dem iPhone oeffnen und importieren."
