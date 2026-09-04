@@ -1,0 +1,137 @@
+name: Kurzbefehl signieren
+
+on:
+  push:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  sign:
+    runs-on: macos-latest
+    steps:
+      - name: Plist aus eingebettetem Blob erzeugen
+        env:
+          BLOB: |
+            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
+        run: |
+          mkdir -p build
+          python3 -c "import base64,gzip,os;open('build/Instagram-Gate.plist','wb').write(gzip.decompress(base64.b64decode(os.environ['BLOB'])))"
+          ls -l build/Instagram-Gate.plist
+          plutil -lint build/Instagram-Gate.plist
+
+      - name: Umgebung protokollieren
+        run: |
+          sw_vers | tee -a build/sign.log
+          which shortcuts | tee -a build/sign.log || echo "shortcuts CLI FEHLT" | tee -a build/sign.log
+          shortcuts --help 2>&1 | head -30 | tee -a build/sign.log || true
+
+      - name: Signieren (mehrere Varianten)
+        id: sign
+        continue-on-error: true
+        run: |
+          IN=build/Instagram-Gate.plist
+          OUT=build/Instagram-Gate.shortcut
+          ok=""
+          try() {
+            echo "=== Versuch: $1 ===" | tee -a build/sign.log
+            if shortcuts sign --mode anyone --input "$2" --output "$OUT" >>build/sign.log 2>&1; then
+              echo "ERFOLG: $1" | tee -a build/sign.log; return 0
+            fi
+            echo "--- fehlgeschlagen ---" | tee -a build/sign.log; return 1
+          }
+          try "xml" "$IN" && ok=1
+          if [ -z "$ok" ]; then
+            cp "$IN" build/in-bin.plist
+            plutil -convert binary1 build/in-bin.plist >>build/sign.log 2>&1 || true
+            try "binaer" build/in-bin.plist && ok=1
+          fi
+          if [ -z "$ok" ]; then
+            open -a Shortcuts >>build/sign.log 2>&1 || true
+            sleep 15
+            try "binaer nach App-Start" build/in-bin.plist && ok=1
+          fi
+          if [ -z "$ok" ]; then
+            echo "ALLE VARIANTEN FEHLGESCHLAGEN" | tee -a build/sign.log; exit 1
+          fi
+
+      - name: Ergebnis pruefen (AEA1)
+        id: verify
+        continue-on-error: true
+        run: |
+          OUT=build/Instagram-Gate.shortcut
+          [ -f "$OUT" ] || { echo "Keine Ausgabedatei"; exit 1; }
+          ls -l "$OUT" | tee -a build/sign.log
+          MAGIC=$(head -c 4 "$OUT")
+          echo "Magic: $MAGIC" | tee -a build/sign.log
+          [ "$MAGIC" = "AEA1" ] || { echo "FEHLER: nicht signiert"; exit 1; }
+          echo "signiert=ja" | tee -a build/sign.log
+
+      - name: Logs hochladen
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: signier-logs
+          path: build/sign.log
+          if-no-files-found: warn
+
+      - name: Release anlegen
+        if: steps.verify.outcome == 'success'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "v${{ github.run_number }}" build/Instagram-Gate.shortcut \
+            --title "Instagram-Gate v${{ github.run_number }}" \
+            --notes "Signierter Kurzbefehl fuer iOS."
+
+      - name: Fehlerfall
+        if: steps.verify.outcome != 'success'
+        run: |
+          echo "--- sign.log ---"; cat build/sign.log || true; exit 1
